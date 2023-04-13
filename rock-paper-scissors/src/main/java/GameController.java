@@ -60,7 +60,10 @@ public class GameController {
     }
 
 
-    public void play() {}
+    private void selectRandomShape() {
+
+    }
+    private void compareShape() {}
     public void history() {}
     public void quit() {}
 }
