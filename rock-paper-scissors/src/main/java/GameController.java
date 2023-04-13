@@ -8,12 +8,15 @@ public class GameController {
     private boolean isPlayer2Win;
     private String playerSelectedShape;
     private String computerSelectedShape;
+    private boolean shouldGoBackMenu;
+
     private enum Option {
         Players("2 players"),
         Computer("computer"),
         HISTORY("history"),
         QUIT("quit");
         private final String option;
+
         Option(String option) {
             this.option = option;
         }
@@ -22,19 +25,28 @@ public class GameController {
             return option;
         }
     }
-        public GameController(UIController uiController) {
-            this.uiController = uiController;
-        }
+
+    public GameController(UIController uiController) {
+        this.uiController = uiController;
+    }
 
     public void gameLoop() {
         uiController.displayWelcome();
         menuOptionHandler();
         pickShapeHandler();
-        checkGameOverHandler();
+        if (shouldGoBackMenu) goBackMenuHandler();
+        else checkGameOverHandler();
+    }
+
+    private void goBackMenuHandler() {
+        if (shouldGoBackMenu) {
+            shouldGoBackMenu = false;
+            gameLoop();
+        }
     }
 
     private void checkGameOverHandler() {
-        if(isPlayer1Win) {
+        if (isPlayer1Win) {
             uiController.displayGameOver(0, playerSelectedShape, computerSelectedShape);
         } else if (isPlayer2Win) {
             uiController.displayGameOver(1, playerSelectedShape, computerSelectedShape);
@@ -42,12 +54,17 @@ public class GameController {
             uiController.displayGameOver(2, playerSelectedShape, computerSelectedShape);
         }
     }
+
     private void pickShapeHandler() {
         uiController.displayShapeOptions();
         String userInput = getUserInput();
+        if (userInput.equals("quit")) {
+            shouldGoBackMenu = true;
+            return;
+        }
         if (gameMode.equals("computer")) {
             boolean isValidShape = validateShape(userInput);
-            if(isValidShape) {
+            if (isValidShape) {
                 computerSelectedShape = selectRandomShape();
                 playerSelectedShape = userInput;
                 isPlayer1Win = compareShape(playerSelectedShape, computerSelectedShape);
@@ -98,12 +115,17 @@ public class GameController {
         String randomShape = validShapes.get(randomIndex);
         return randomShape;
     }
+
     private boolean compareShape(String shapeA, String shapeB) {
         if (shapeA.equals("rock") && shapeB.equals("scissors")) return true;
         if (shapeA.equals("paper") && shapeB.equals("rock")) return true;
         if (shapeA.equals("scissors") && shapeB.equals("paper")) return true;
         return false;
     }
-    public void history() {}
-    public void quit() {}
+
+    public void history() {
+    }
+
+    public void quit() {
+    }
 }
