@@ -2,7 +2,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class GameController {
-
+    private UIController uiController;
+    private String gameMode;
+    private boolean isPlayer1Win;
+    private boolean isPlayer2Win;
+    private String playerSelectedShape;
+    private String computerSelectedShape;
     private enum Option {
         Players("2 players"),
         Computer("computer"),
@@ -17,39 +22,63 @@ public class GameController {
             return option;
         }
     }
-        public GameController() {}
+        public GameController(UIController uiController) {
+            this.uiController = uiController;
+        }
 
-
-    public void getMenuOption() {
-        Scanner scanner = new Scanner(System.in);
-        String selectedOption = scanner.nextLine();
-        menuOptionHandler(selectedOption);
+    public void gameLoop() {
+        uiController.displayWelcome();
+        menuOptionHandler();
+        pickShapeHandler();
+        checkGameOverHandler();
     }
 
-    private void menuOptionHandler(String option) {
-        option = option.toLowerCase();
+    private void checkGameOverHandler() {
+        if(isPlayer1Win) {
+            uiController.displayGameOver(0, playerSelectedShape, computerSelectedShape);
+        } else if (isPlayer2Win) {
+            uiController.displayGameOver(1, playerSelectedShape, computerSelectedShape);
+        } else {
+            uiController.displayGameOver(2, playerSelectedShape, computerSelectedShape);
+        }
+    }
+    private void pickShapeHandler() {
+        uiController.displayShapeOptions();
+        String userInput = getUserInput();
+        if (gameMode.equals("computer")) {
+            boolean isValidShape = validateShape(userInput);
+            if(isValidShape) {
+                computerSelectedShape = selectRandomShape();
+                playerSelectedShape = userInput;
+                isPlayer1Win = compareShape(playerSelectedShape, computerSelectedShape);
+                isPlayer2Win = compareShape(computerSelectedShape, playerSelectedShape);
+            } else {
+                pickShapeHandler();
+            }
+        }
+    }
+
+    private void menuOptionHandler() {
+        uiController.displayMenu();
+        String option = getUserInput();
         if (option.equals(Option.Players.getOption())) {
+            gameMode = "players";
             System.out.println("two players");
         } else if (option.equals(Option.Computer.getOption())) {
-            System.out.println("computer");
+            gameMode = "computer";
         } else if (option.equals((Option.HISTORY.getOption()))) {
             System.out.println("check history");
         } else if (option.equals((Option.QUIT.getOption()))) {
             System.out.println("quit game");
         } else {
-            System.out.println("invalid option");
+            menuOptionHandler();
         }
     }
 
-    public void getShapeOption() {
+    private String getUserInput() {
         Scanner scanner = new Scanner(System.in);
-        String selectedShape = scanner.nextLine();
-        boolean isValidShape = validateShape(selectedShape.toLowerCase());
-        if (isValidShape) {
-            System.out.println("you selected " + selectedShape);
-        } else {
-            System.out.println("invalid shape");
-        }
+        String userInput = scanner.nextLine();
+        return userInput.toLowerCase();
     }
 
     private boolean validateShape(String shape) {
@@ -60,10 +89,21 @@ public class GameController {
     }
 
 
-    private void selectRandomShape() {
-
+    private String selectRandomShape() {
+        ArrayList<String> validShapes = new ArrayList<>(Arrays.asList("rock",
+                "paper",
+                "scissors"));
+        Random random = new Random();
+        int randomIndex = random.nextInt(validShapes.size());
+        String randomShape = validShapes.get(randomIndex);
+        return randomShape;
     }
-    private void compareShape() {}
+    private boolean compareShape(String shapeA, String shapeB) {
+        if (shapeA.equals("rock") && shapeB.equals("scissors")) return true;
+        if (shapeA.equals("paper") && shapeB.equals("rock")) return true;
+        if (shapeA.equals("scissors") && shapeB.equals("paper")) return true;
+        return false;
+    }
     public void history() {}
     public void quit() {}
 }

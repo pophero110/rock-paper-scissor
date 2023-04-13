@@ -23,4 +23,9 @@ public class UIController {
         System.out.println("Welcome to Rock, Paper, Scissors!\n");
     }
 
+    public void displayGameOver(int state, String player1Shape, String player2Shape) {
+        System.out.println("Computer picks: " + player2Shape);
+        System.out.println("You picks: " + player1Shape);
+        System.out.println(state == 0 ? "You Won!" : state == 1 ? "You Lose!" : "Tie Game");
+    }
 }
