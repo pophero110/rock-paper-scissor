@@ -5,19 +5,12 @@ Main Goal: Make a rock-paper-scissors game using Java
 
 # Table of Contents
 
-- [_Rock Paper Scissors_](#rock-paper-scissors)
-- [Table of Contents](#table-of-contents)
-- [Technologies](#technologies)
 - [Design Methodology](#design-methodology)
 - [Technical Requirement](#technical-requirement)
 - [Project Breakdown](#project-breakdown)
+  - [Planning](#planning-diagram)
   - [User Stories](#user-stories)
-  - [Class Design](#class-design)
-- [Project Management](#project-management)
-
-# Technologies
-
-- Miro
+- [Credits](#credits)
 
 # Design Methodology
 
@@ -37,10 +30,10 @@ Main Goal: Make a rock-paper-scissors game using Java
 
 # Project Breakdown
 
-<details>
-    <summary>
-        MVP
-    </summary>
+## Planning
+
+[Project Management](https://github.com/users/pophero110/projects/3)  
+[Class Diagram](https://miro.com/app/board/uXjVMT7WbxM=/?share_link_id=990580822840)
 
 ## User Stories
 
@@ -55,13 +48,7 @@ Main Goal: Make a rock-paper-scissors game using Java
 - As a player, I have a player profile that manages my game state, including my points, selected shape, and win/loss/tie counts
 - As a player, I want the game to handle incorrect capitalization of valid input like "rock," "Rock," "RoCk," "ROCK," and other variations so that my input will always be recognized and processed correctly
 
-## Class Design
+# Credits
 
-- GameHandler class
-- UIHandler class
-- Player class
-</details>
-
-# Project Management
-
-[Kanban Board](https://github.com/users/pophero110/projects/3/views/1)
+- An [article](https://www.freecodecamp.org/news/solid-principles-explained-in-plain-english/) that explains the SOLID principles in plain English.
+- An [article](https://dev.to/ivanzm123/stop-using-switch-please-2hif) about how to refactor a long switch statement
