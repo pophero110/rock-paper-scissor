@@ -1,15 +1,18 @@
 # _Rock Paper Scissors_
 
-Developer: Jeff Ou
-Main Goal: Make a rock-paper-scissors game using Java
+Developer: Jeff Ou  
+Main Goal: Make a rock-paper-scissors game using Java  
+Project Management: [Kanban Board](https://github.com/users/pophero110/projects/3)
 
 # Table of Contents
 
 - [Design Methodology](#design-methodology)
 - [Technical Requirement](#technical-requirement)
 - [Project Breakdown](#project-breakdown)
-  - [Planning](#planning-diagram)
+  - [Class Diagram](#class-diagram)
   - [User Stories](#user-stories)
+- [Hurdle && Win](#hurdle--win)
+- [TODO](#todo)
 - [Credits](#credits)
 
 # Design Methodology
@@ -30,10 +33,10 @@ Main Goal: Make a rock-paper-scissors game using Java
 
 # Project Breakdown
 
-## Planning
+## Class Diagram
 
-[Project Management](https://github.com/users/pophero110/projects/3)  
-[Class Diagram](https://miro.com/app/board/uXjVMT7WbxM=/?share_link_id=990580822840)
+![Class Diagram](resources/class_diagram.png)  
+[Link to diagram](https://miro.com/app/board/uXjVMT7WbxM=/?share_link_id=990580822840)
 
 ## User Stories
 
@@ -47,6 +50,24 @@ Main Goal: Make a rock-paper-scissors game using Java
 - As a player, I'm able to continue the game when I enter the wrong input
 - As a player, I have a player profile that manages my game state, including my points, selected shape, and win/loss/tie counts
 - As a player, I want the game to handle incorrect capitalization of valid input like "rock," "Rock," "RoCk," "ROCK," and other variations so that my input will always be recognized and processed correctly
+- As a player, I want to be able to play rock-paper-scissors against a human competitor when I choose to play with two players.
+
+# Hurdle && Win
+
+- The biggest hurdle is how to apply SOLID principles.
+- The biggest win is that I'm able to write code that follows SOLID principles, which reinforces my knowledge about them.
+- Another win is that I am now able to apply SOLID principles not only to the code but also to the design of classes.
+
+# TODO
+
+- Write automated JUnit tests for your application.
+- Use an Agile project management framework for your game. ✅
+- If the user enters history, the program should display previous game history (winner's name, game date, and more). ✅
+- Use Java packages to modularize code. Place any helper tools in these packages — they could be related to input, networking, or graphics.
+- Use Maven to install external dependencies your game might require.
+- Use generics on collections such as arrays and array lists to store different data composed of different types.
+- Use multithreading to handle concurrent requests (like in multiplayer games).
+- Incorporate video, text, data, networking, and sound into your game via Processing.
 
 # Credits
 
