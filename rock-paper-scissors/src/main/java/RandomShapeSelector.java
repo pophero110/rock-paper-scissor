@@ -1,3 +1,3 @@
 public interface RandomShapeSelector {
-    public String selectRandomShape();
+    String selectRandomShape();
 }

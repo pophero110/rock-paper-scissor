@@ -1,10 +1,7 @@
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
+import java.util.*;
 
-public class MenuOptions extends Options {
+public class MenuOptions implements Menu {
     final private Map<String, Runnable> optionHandlers = new HashMap<>();
     final private static List<String> menuOptions = Arrays.asList(
             "Type '2 players' or 'vs. computer' to play.",
@@ -18,7 +15,9 @@ public class MenuOptions extends Options {
         Computer("vs. computer"),
         HISTORY("history"),
         STATE("state"),
-        QUIT("quit");
+        QUIT("quit"),
+        DEFAULT("default")
+        ;
         private final String option;
 
         Option(String option) {
@@ -28,18 +27,21 @@ public class MenuOptions extends Options {
         public String getOption() {
             return option;
         }
+
+        public static boolean contains(String value) {
+            for (Option e : Option.values()) {
+                if (e.getOption().equals(value)) {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 
     public MenuOptions(GameState gameState, UIController uiController) {
-        optionHandlers.put(Option.Players.getOption(), () -> {
-            gameState.setPlayer2(new HumanPlayer("Player2"));
-            gameState.setGameMode(Option.Players.getOption());
-        });
+        optionHandlers.put(Option.Players.getOption(), gameState::setGameModeToPlayers);
 
-        optionHandlers.put(Option.Computer.getOption(), () -> {
-            gameState.setPlayer2(new ComputerPlayer("Computer"));
-            gameState.setGameMode(Option.Computer.getOption());
-        });
+        optionHandlers.put(Option.Computer.getOption(), gameState::setGameModeToComputer);
 
         optionHandlers.put(Option.HISTORY.getOption(), () -> {
             uiController.displayHistory();
@@ -56,11 +58,17 @@ public class MenuOptions extends Options {
             System.exit(0);
         });
 
-        optionHandlers.put("default", uiController::displayInvalidInput);
     }
 
-    public void handleOption(String option) {
-        optionHandlers.getOrDefault(option, optionHandlers.get("default")).run();
+    public void handleOption(String option) throws IllegalArgumentException {
+        if(!Option.contains(option)) throw new IllegalArgumentException();
+        optionHandlers.get(option).run();
+    }
+
+    @Override
+    public void showOption() {
+        System.out.println("=== MAIN MENU ===");
+        menuOptions.forEach(System.out::println);
     }
 
     public void setShouldGoBackMenu(boolean shouldGoBackMenu) {
@@ -69,18 +77,5 @@ public class MenuOptions extends Options {
 
     public boolean getShouldGoBackMenu() {
         return shouldGoBackMenu;
-    }
-
-    public void displayMenu() {
-        System.out.println("=== MAIN MENU ===");
-        menuOptions.forEach(System.out::println);
-    }
-
-    public String getPlayersOption() {
-        return Option.Players.getOption();
-    }
-
-    public String getComputerOption() {
-        return Option.Computer.getOption();
     }
 }

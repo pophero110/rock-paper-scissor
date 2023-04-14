@@ -3,6 +3,9 @@
 import java.util.ArrayList;
 
 public class GameState {
+
+    public final static String PlayerMode = "2 players";
+    public final static String ComputerMode = "vs. computer";
     private String gameMode;
     private int playerTurn = 1;
     private int gameState = -1;
@@ -50,8 +53,9 @@ public class GameState {
                 player1.getSelectedShape(),
                 player2.getName(),
                 player2.getSelectedShape());
-        history.add((player1.isWinning() ? player1.getName() : player2. getName()) + " WIN: " + selectedShapeByTwoPlayers);
+        history.add((player1.isWinning() ? player1.getName() : player2.getName()) + " WIN: " + selectedShapeByTwoPlayers);
     }
+
     public ArrayList getHistory() {
         return history;
     }
@@ -60,8 +64,22 @@ public class GameState {
         return gameMode;
     }
 
-    public void setGameMode(String gameMode) {
-        this.gameMode = gameMode;
+    public void setGameModeToPlayers() {
+        gameMode = PlayerMode;
+        setPlayer2(new HumanPlayer("Player2"));
+    }
+
+    public void setGameModeToComputer() {
+        gameMode = ComputerMode;
+        setPlayer2(new ComputerPlayer("Computer"));
+    }
+
+    public boolean isPlayerMode() {
+        return gameMode.equals(PlayerMode);
+    }
+
+    public boolean isComputerMode() {
+        return gameMode.equals(ComputerMode);
     }
 
     public int getPlayerTurn() {
@@ -122,5 +140,27 @@ public class GameState {
 
     public void setPlayer2SelectedShape(String player2SelectedShape) {
         this.player2SelectedShape = player2SelectedShape;
+    }
+
+    public void updateGameState(String userInput) {
+        if (isComputerMode()) {
+            handleComputerMode(userInput);
+        } else {
+            handlePlayerMode(userInput);
+        }
+    }
+    private void handleComputerMode(String userInput) {
+        setPlayer1SelectedShape(userInput);
+        setPlayer2SelectedShape(((ComputerPlayer) player2).selectRandomShape());
+    }
+
+    private void handlePlayerMode(String userInput) {
+        if (getPlayerTurn() == 2) {
+            setPlayerTurn(1);
+            setPlayer2SelectedShape(userInput);
+        } else {
+            setPlayerTurn(2);
+            setPlayer1SelectedShape(userInput);
+        }
     }
 }

@@ -3,17 +3,17 @@ import java.util.*;
 public class GameController {
     final private GameState gameState = new GameState(new HumanPlayer("Player1"), new ComputerPlayer("Computer"));
     final private UIController uiController = new UIController(gameState);
-    final private MenuOptions menuOptions = new MenuOptions(gameState, uiController);
+    final private Menu menuOptions = new MenuOptions(gameState, uiController);
 
     public GameController() {
         uiController.displayWelcome();
     }
 
     public void gameLoop(boolean isGaming) {
-        if (!isGaming) menuOptionHandler();
+        if (!isGaming) menuOptionsHandler();
         if (menuOptions.getShouldGoBackMenu()) goBackMenuHandler();
         else {
-            if (gameState.getGameMode().equals(menuOptions.getPlayersOption())) {
+            if (gameState.isPlayerMode()) {
                 pickShapeHandler();
                 if (!menuOptions.getShouldGoBackMenu()) pickShapeHandler();
             } else {
@@ -38,67 +38,49 @@ public class GameController {
         gameState.setPlayer1Win(compareShape(gameState.getPlayer1SelectedShape(), gameState.getPlayer2SelectedShape()));
         gameState.setPlayer2Win(compareShape(gameState.getPlayer2SelectedShape(), gameState.getPlayer1SelectedShape()));
         gameState.updatePlayerState();
-        if (gameState.isPlayer1Win()) {
-            gameState.setGameState(0);
-            uiController.displayGameOver();
-        } else if (gameState.isPlayer2Win()) {
-            gameState.setGameState(1);
-            uiController.displayGameOver();
-        } else {
-            gameState.setGameState(2);
-            uiController.displayGameOver();
-        }
+        gameState.setGameState(gameState.isPlayer1Win() ? 0 : gameState.isPlayer2Win() ? 1 : 2);
+        uiController.displayGameOver();
         gameState.addHistory();
         gameState.reset();
     }
 
     private void pickShapeHandler() {
         uiController.displayShapeOptions();
-        String userInput = getUserInput();
-        String gameMode = gameState.getGameMode();
-        if (userInput.equals("quit")) {
-            menuOptions.setShouldGoBackMenu(true);
-            return;
-        }
-        if (gameMode.equals(menuOptions.getComputerOption())) {
-            boolean isValidShape = validateShape(userInput);
-            if (isValidShape) {
-                // TODO how to avoid casting
-                ComputerPlayer player2 = (ComputerPlayer) gameState.getPlayer2();
-                gameState.setPlayer1SelectedShape(userInput);
-                gameState.setPlayer2SelectedShape(player2.selectRandomShape());
-            } else {
-                uiController.displayInvalidInput();
-                pickShapeHandler();
+        Optional<String> validUserInput = validateShapeOptions(getUserInput());
+        if (validUserInput.isPresent()) {
+            if (validUserInput.get().equals("quit")) {
+                menuOptions.setShouldGoBackMenu(true);
+                return;
             }
+            gameState.updateGameState(validUserInput.get());
         } else {
-            if (gameState.getPlayerTurn() == 2) {
-                gameState.setPlayerTurn(1);
-                gameState.setPlayer2SelectedShape(userInput);
-            } else {
-                gameState.setPlayerTurn(2);
-                gameState.setPlayer1SelectedShape(userInput);
-            }
+            uiController.displayInvalidInput();
+            pickShapeHandler();
         }
     }
 
-    private void menuOptionHandler() {
-        menuOptions.displayMenu();
-        menuOptions.handleOption(getUserInput());
+    private void menuOptionsHandler() {
+        menuOptions.showOption();
+        try {
+            menuOptions.handleOption(getUserInput());
+        } catch (IllegalArgumentException e) {
+            uiController.displayInvalidInput();
+            menuOptionsHandler();
+        }
     }
 
     private String getUserInput() {
-        Scanner scanner = new Scanner(System.in);
-        String userInput = scanner.nextLine();
-        return userInput.toLowerCase();
+        return new Scanner(System.in).nextLine().toLowerCase();
     }
 
-    private boolean validateShape(String shape) {
-        ArrayList<String> validShapes = new ArrayList<>(Arrays.asList("rock",
-                "paper",
-                "scissors"));
-        return validShapes.contains(shape);
+    private Optional<String> validateShapeOptions(String shape) {
+        List<String> validShapes = Arrays.asList("rock", "paper", "scissors", "quit");
+        if (validShapes.contains(shape)) {
+            return Optional.of(shape);
+        }
+        return Optional.empty();
     }
+
 
     private boolean compareShape(String shapeA, String shapeB) {
         if (shapeA.equals("rock") && shapeB.equals("scissors")) return true;
