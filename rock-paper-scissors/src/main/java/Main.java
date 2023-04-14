@@ -1,8 +1,6 @@
 public class Main {
     public static void main(String[] args) {
-        UIController uiController = new UIController();
-        GameController gameController = new GameController(uiController);
-        uiController.displayWelcome();
+        GameController gameController = new GameController();
         gameController.gameLoop(false);
     }
 }

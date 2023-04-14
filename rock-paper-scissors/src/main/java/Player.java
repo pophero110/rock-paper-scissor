@@ -2,7 +2,7 @@ public abstract class Player {
     private int winningPoints;
     private int losingPoints;
     private int tiePoints;
-    private String name;
+    private final String name;
     private String selectedShape;
     private boolean isWinning;
 
@@ -20,10 +20,6 @@ public abstract class Player {
 
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getSelectedShape() {
@@ -61,11 +57,13 @@ public abstract class Player {
     @Override
     public String toString() {
         return String.format(
-                "  Winning Points: %d\n" +
-                        "  Losing Points: %d\n" +
-                        "  Tie Points: %d\n" +
-                        "  Previous Move: %s\n" +
-                        "  Won Last Game: %b",
+                """
+                          Winning Points: %d
+                          Losing Points: %d
+                          Tie Points: %d
+                          Previous Move: %s
+                          Won Last Game: %b\
+                        """,
                 winningPoints, losingPoints, tiePoints, selectedShape, isWinning);
 
     }
