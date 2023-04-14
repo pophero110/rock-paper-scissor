@@ -2,7 +2,7 @@
 
 import java.util.ArrayList;
 
-public class GameState {
+public class GameState implements Game {
 
     public final static String PlayerMode = "2 players";
     public final static String ComputerMode = "vs. computer";
@@ -53,7 +53,13 @@ public class GameState {
                 player1.getSelectedShape(),
                 player2.getName(),
                 player2.getSelectedShape());
-        history.add((player1.isWinning() ? player1.getName() : player2.getName()) + " WIN: " + selectedShapeByTwoPlayers);
+        if (player1.isWinning()) {
+            history.add(player1.getName() + " WIN: " + selectedShapeByTwoPlayers);
+        } else if (player2.isWinning()) {
+            history.add(player2.getName() + " WIN: " + selectedShapeByTwoPlayers);
+        } else {
+            history.add("TIE: " + selectedShapeByTwoPlayers);
+        }
     }
 
     public ArrayList getHistory() {

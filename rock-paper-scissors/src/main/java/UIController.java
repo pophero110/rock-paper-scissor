@@ -1,9 +1,7 @@
 
-public class UIController {
-
-    private GameState gameState;
-    public UIController(GameState gameState) {
-        this.gameState = gameState;
+public class UIController extends GameUI {
+    public UIController(Game gameState) {
+        super(gameState);
     }
 
     public void displayShapeOptions() {

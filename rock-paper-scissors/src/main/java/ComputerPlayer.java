@@ -7,6 +7,9 @@ public class ComputerPlayer extends Player implements RandomShapeSelector {
         super(name);
     }
 
+    /**
+     * @returna random valid shape (rock, paper, or scissors)
+     */
     @Override
     public String selectRandomShape() {
         ArrayList<String> validShapes = new ArrayList<>(Arrays.asList("rock",

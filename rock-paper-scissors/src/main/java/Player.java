@@ -1,3 +1,10 @@
+/**
+ This abstract class represents a player in a game. It has fields for the player's winning points, losing points,
+ and tie points, as well as their name, selected shape, and whether they won the last game. The class provides
+ getter and setter methods for these fields. It also overrides the toString method to print out the player's current
+ status, including their winning points, losing points, tie points, previous move, and whether they won the
+ last game.
+ */
 public abstract class Player {
     private int winningPoints;
     private int losingPoints;
