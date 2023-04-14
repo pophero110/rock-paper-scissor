@@ -38,7 +38,7 @@ public class MenuOptions implements Menu {
         }
     }
 
-    public MenuOptions(GameState gameState, UIController uiController) {
+    public MenuOptions(Game gameState, GameUI uiController) {
         optionHandlers.put(Option.Players.getOption(), gameState::setGameModeToPlayers);
 
         optionHandlers.put(Option.Computer.getOption(), gameState::setGameModeToComputer);
