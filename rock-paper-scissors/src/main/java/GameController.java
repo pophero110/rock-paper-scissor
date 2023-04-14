@@ -4,12 +4,13 @@ import java.util.stream.Collectors;
 public class GameController {
     private UIController uiController;
     private String gameMode;
+    private int playerTurn = 1;
     private int gameState = -1;
     private boolean isPlayer1Win;
     private boolean isPlayer2Win;
 
     private Player player1;
-    private Player player2;
+    private Player player2 = new ComputerPlayer();
     private String player1SelectedShape;
     private String player2SelectedShape;
     private boolean shouldGoBackMenu;
@@ -17,7 +18,7 @@ public class GameController {
 
     private enum Option {
         Players("2 players"),
-        Computer("computer"),
+        Computer("vs. computer"),
         HISTORY("history"),
         STATE("state"),
         QUIT("quit");
@@ -37,24 +38,30 @@ public class GameController {
     }
 
     public void gameLoop(boolean isGaming) {
-        if(!isGaming) menuOptionHandler();
+        if (!isGaming) menuOptionHandler();
         if (shouldGoBackMenu) goBackMenuHandler();
         else {
-            pickShapeHandler();
+            if (gameMode.equals(Option.Players.getOption())) {
+                pickShapeHandler();
+                if(!shouldGoBackMenu) pickShapeHandler();
+            } else {
+                pickShapeHandler();
+            }
             if (shouldGoBackMenu) goBackMenuHandler();
             else {
                 checkGameOverHandler();
                 gameLoop(true);
-            };
+            }
+            ;
         }
-
     }
 
-    public void createPlayers() {
+
+    public void createPlayers(int whichPlayer) {
         uiController.displayPlayerForm();
         String name = getUserInput();
-        player1 = new HumanPlayer(name);
-        player2 = new ComputerPlayer();
+        if (whichPlayer == 1) player1 = new HumanPlayer(name);
+        else player2 = new HumanPlayer(name);
     }
 
     private void goBackMenuHandler() {
@@ -87,7 +94,9 @@ public class GameController {
         isPlayer1Win = false;
         isPlayer2Win = false;
         gameState = -1;
+        playerTurn = 1;
     }
+
     private void updateHistory() {
         String selectedShapeByTwoPlayers = String.format("Player picked %s, computer picked %s", player1.getSelectedShape(), player2.getSelectedShape());
         history.add((player1.isWinning() ? "WIN: " : "LOSE: ") + selectedShapeByTwoPlayers);
@@ -100,7 +109,7 @@ public class GameController {
             shouldGoBackMenu = true;
             return;
         }
-        if (gameMode.equals("computer")) {
+        if (gameMode.equals(Option.Computer.getOption())) {
             boolean isValidShape = validateShape(userInput);
             if (isValidShape) {
                 player2SelectedShape = selectRandomShape();
@@ -109,18 +118,27 @@ public class GameController {
                 uiController.displayInvalidInput();
                 pickShapeHandler();
             }
+        } else {
+            if(playerTurn == 2) {
+                playerTurn = 1;
+                player1SelectedShape = userInput;
+            } else {
+                playerTurn = 2;
+                player2SelectedShape = userInput;
+            }
         }
     }
+
     private void updatePlayerState() {
         player1.setWinning(isPlayer1Win);
         player2.setWinning(isPlayer2Win);
         player1.setSelectedShape(player1SelectedShape);
         player2.setSelectedShape(player2SelectedShape);
         if (isPlayer1Win) {
-            player1.setWinningPoints(player1.getWinningPoints()  + 1);
+            player1.setWinningPoints(player1.getWinningPoints() + 1);
             player2.setLosingPoints(player2.getLosingPoints() + 1);
         } else if (isPlayer2Win) {
-            player2.setWinningPoints(player2.getWinningPoints()  + 1);
+            player2.setWinningPoints(player2.getWinningPoints() + 1);
             player1.setLosingPoints(player1.getLosingPoints() + 1);
         } else {
             player1.setTiePoints(player1.getTiePoints() + 1);
@@ -132,14 +150,14 @@ public class GameController {
         uiController.displayMenu();
         String option = getUserInput();
         if (option.equals(Option.Players.getOption())) {
-            gameMode = "players";
-            System.out.println("two players");
+            player2 = new HumanPlayer("Player2");
+            gameMode = Option.Players.getOption();
         } else if (option.equals(Option.Computer.getOption())) {
-            gameMode = "computer";
+            gameMode = Option.Computer.getOption();
         } else if (option.equals((Option.HISTORY.getOption()))) {
             uiController.displayHistory(history);
             shouldGoBackMenu = true;
-        }else if (option.equals(Option.STATE.getOption())) {
+        } else if (option.equals(Option.STATE.getOption())) {
             uiController.displayPlayerState(player1);
             shouldGoBackMenu = true;
         } else if (option.equals((Option.QUIT.getOption()))) {
@@ -183,9 +201,4 @@ public class GameController {
         return false;
     }
 
-    public void history() {
-    }
-
-    public void quit() {
-    }
 }

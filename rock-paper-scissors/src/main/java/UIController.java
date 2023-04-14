@@ -5,7 +5,7 @@ public class UIController {
     private ArrayList<String> menuOptions = new ArrayList<>();
 
     public UIController() {
-        menuOptions.add("Type '2 players' or 'computer' to play .");
+        menuOptions.add("Type '2 players' or 'vs. computer' to play .");
         menuOptions.add("Type 'history' to view your game history.");
         menuOptions.add("Type 'state' to view your game state.");
         menuOptions.add("Type 'quit' to stop playing.");
