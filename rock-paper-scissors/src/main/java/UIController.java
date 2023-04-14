@@ -1,21 +1,9 @@
 import java.util.ArrayList;
 public class UIController {
-    final private ArrayList<String> menuOptions = new ArrayList<>();
+
     private GameState gameState;
-    public UIController() {
-        menuOptions.add("Type '2 players' or 'vs. computer' to play .");
-        menuOptions.add("Type 'history' to view your game history.");
-        menuOptions.add("Type 'state' to view your game state.");
-        menuOptions.add("Type 'quit' to stop playing.");
-    }
-
-    public void setGameState(GameState gameState) {
+    public UIController(GameState gameState) {
         this.gameState = gameState;
-    }
-
-    public void displayMenu() {
-        System.out.println("=== MAIN MENU ===");
-        menuOptions.forEach(System.out::println);
     }
 
     public void displayShapeOptions() {
@@ -24,7 +12,7 @@ public class UIController {
         System.out.println("Type 'quit' to go back to the main menu.");
     }
     public void displayWelcome() {
-        System.out.println("Welcome to Rock, Paper, Scissors!\n");
+        System.out.println("\nWelcome to Rock, Paper, Scissors!\n");
     }
 
     public void displayGameOver() {

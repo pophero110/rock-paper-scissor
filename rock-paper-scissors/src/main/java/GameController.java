@@ -1,41 +1,25 @@
 import java.util.*;
 
 public class GameController {
-    final private UIController uiController = new UIController();
     final private GameState gameState = new GameState(new HumanPlayer("Player1"), new ComputerPlayer("Computer"));
-    private boolean shouldGoBackMenu;
-    private enum Option {
-        Players("2 players"),
-        Computer("vs. computer"),
-        HISTORY("history"),
-        STATE("state"),
-        QUIT("quit");
-        private final String option;
-
-        Option(String option) {
-            this.option = option;
-        }
-
-        public String getOption() {
-            return option;
-        }
-    }
+    final private UIController uiController = new UIController(gameState);
+    final private MenuOptions menuOptions = new MenuOptions(gameState, uiController);
 
     public GameController() {
-        uiController.setGameState(gameState);
+        uiController.displayWelcome();
     }
 
     public void gameLoop(boolean isGaming) {
         if (!isGaming) menuOptionHandler();
-        if (shouldGoBackMenu) goBackMenuHandler();
+        if (menuOptions.getShouldGoBackMenu()) goBackMenuHandler();
         else {
-            if (gameState.getGameMode().equals(Option.Players.getOption())) {
+            if (gameState.getGameMode().equals(menuOptions.getPlayersOption())) {
                 pickShapeHandler();
-                if (!shouldGoBackMenu) pickShapeHandler();
+                if (!menuOptions.getShouldGoBackMenu()) pickShapeHandler();
             } else {
                 pickShapeHandler();
             }
-            if (shouldGoBackMenu) goBackMenuHandler();
+            if (menuOptions.getShouldGoBackMenu()) goBackMenuHandler();
             else {
                 checkGameOverHandler();
                 gameLoop(true);
@@ -44,8 +28,8 @@ public class GameController {
     }
 
     private void goBackMenuHandler() {
-        if (shouldGoBackMenu) {
-            shouldGoBackMenu = false;
+        if (menuOptions.getShouldGoBackMenu()) {
+            menuOptions.setShouldGoBackMenu(false);
             gameLoop(false);
         }
     }
@@ -73,10 +57,10 @@ public class GameController {
         String userInput = getUserInput();
         String gameMode = gameState.getGameMode();
         if (userInput.equals("quit")) {
-            shouldGoBackMenu = true;
+            menuOptions.setShouldGoBackMenu(true);
             return;
         }
-        if (gameMode.equals(Option.Computer.getOption())) {
+        if (gameMode.equals(menuOptions.getComputerOption())) {
             boolean isValidShape = validateShape(userInput);
             if (isValidShape) {
                 // TODO how to avoid casting
@@ -99,27 +83,8 @@ public class GameController {
     }
 
     private void menuOptionHandler() {
-        uiController.displayMenu();
-        String option = getUserInput();
-        if (option.equals(Option.Players.getOption())) {
-            gameState.setPlayer2(new HumanPlayer("Player2"));
-            gameState.setGameMode(Option.Players.getOption());
-        } else if (option.equals(Option.Computer.getOption())) {
-            gameState.setPlayer2(new ComputerPlayer("Computer"));
-            gameState.setGameMode(Option.Computer.getOption());
-        } else if (option.equals((Option.HISTORY.getOption()))) {
-            uiController.displayHistory();
-            shouldGoBackMenu = true;
-        } else if (option.equals(Option.STATE.getOption())) {
-            uiController.displayPlayerState();
-            shouldGoBackMenu = true;
-        } else if (option.equals((Option.QUIT.getOption()))) {
-            System.out.println("Game Terminated");
-            System.exit(0);
-        } else {
-            uiController.displayInvalidInput();
-            menuOptionHandler();
-        }
+        menuOptions.displayMenu();
+        menuOptions.handleOption(getUserInput());
     }
 
     private String getUserInput() {
