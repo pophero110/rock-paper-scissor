@@ -1,5 +1,5 @@
 public class ComputerPlayer extends Player {
-    public ComputerPlayer() {
-        super("CPU");
+    public ComputerPlayer(String name) {
+        super(name);
     }
 }

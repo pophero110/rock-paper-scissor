@@ -3,7 +3,6 @@ public class Main {
         UIController uiController = new UIController();
         GameController gameController = new GameController(uiController);
         uiController.displayWelcome();
-        gameController.createPlayers(1);
         gameController.gameLoop(false);
     }
 }

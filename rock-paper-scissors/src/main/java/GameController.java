@@ -9,8 +9,8 @@ public class GameController {
     private boolean isPlayer1Win;
     private boolean isPlayer2Win;
 
-    private Player player1;
-    private Player player2 = new ComputerPlayer();
+    private Player player1 = new HumanPlayer("Player1");
+    private Player player2;
     private String player1SelectedShape;
     private String player2SelectedShape;
     private boolean shouldGoBackMenu;
@@ -43,7 +43,7 @@ public class GameController {
         else {
             if (gameMode.equals(Option.Players.getOption())) {
                 pickShapeHandler();
-                if(!shouldGoBackMenu) pickShapeHandler();
+                if (!shouldGoBackMenu) pickShapeHandler();
             } else {
                 pickShapeHandler();
             }
@@ -56,14 +56,6 @@ public class GameController {
         }
     }
 
-
-    public void createPlayers(int whichPlayer) {
-        uiController.displayPlayerForm();
-        String name = getUserInput();
-        if (whichPlayer == 1) player1 = new HumanPlayer(name);
-        else player2 = new HumanPlayer(name);
-    }
-
     private void goBackMenuHandler() {
         if (shouldGoBackMenu) {
             shouldGoBackMenu = false;
@@ -74,18 +66,17 @@ public class GameController {
     private void checkGameOverHandler() {
         isPlayer1Win = compareShape(player1SelectedShape, player2SelectedShape);
         isPlayer2Win = compareShape(player2SelectedShape, player1SelectedShape);
+        updatePlayerState();
         if (isPlayer1Win) {
             gameState = 0;
-            uiController.displayGameOver(gameState, player1SelectedShape, player2SelectedShape);
+            uiController.displayGameOver(gameState, gameMode, player1, player2);
         } else if (isPlayer2Win) {
             gameState = 1;
-            uiController.displayGameOver(gameState, player1SelectedShape, player2SelectedShape);
+            uiController.displayGameOver(gameState, gameMode, player1, player2);
         } else {
             gameState = 2;
-            uiController.displayGameOver(gameState, player1SelectedShape, player2SelectedShape);
+            uiController.displayGameOver(gameState, gameMode, player1, player2);
         }
-
-        updatePlayerState();
         updateHistory();
         resetGameState();
     }
@@ -98,8 +89,12 @@ public class GameController {
     }
 
     private void updateHistory() {
-        String selectedShapeByTwoPlayers = String.format("Player picked %s, computer picked %s", player1.getSelectedShape(), player2.getSelectedShape());
-        history.add((player1.isWinning() ? "WIN: " : "LOSE: ") + selectedShapeByTwoPlayers);
+        String selectedShapeByTwoPlayers = String.format("%s picked %s, %s picked %s",
+                player1.getName(),
+                player1.getSelectedShape(),
+                player2.getName(),
+                player2.getSelectedShape());
+        history.add((player1.isWinning() ? player1.getName() : player2. getName()) + " WIN: " + selectedShapeByTwoPlayers);
     }
 
     private void pickShapeHandler() {
@@ -119,12 +114,12 @@ public class GameController {
                 pickShapeHandler();
             }
         } else {
-            if(playerTurn == 2) {
+            if (playerTurn == 2) {
                 playerTurn = 1;
-                player1SelectedShape = userInput;
+                player2SelectedShape = userInput;
             } else {
                 playerTurn = 2;
-                player2SelectedShape = userInput;
+                player1SelectedShape = userInput;
             }
         }
     }
@@ -153,15 +148,15 @@ public class GameController {
             player2 = new HumanPlayer("Player2");
             gameMode = Option.Players.getOption();
         } else if (option.equals(Option.Computer.getOption())) {
+            player2 = new ComputerPlayer("Computer");
             gameMode = Option.Computer.getOption();
         } else if (option.equals((Option.HISTORY.getOption()))) {
             uiController.displayHistory(history);
             shouldGoBackMenu = true;
         } else if (option.equals(Option.STATE.getOption())) {
-            uiController.displayPlayerState(player1);
+            uiController.displayPlayerState(player1, player2);
             shouldGoBackMenu = true;
         } else if (option.equals((Option.QUIT.getOption()))) {
-            uiController.displayHistory(history);
             System.out.println("Game Terminated");
             System.exit(0);
         } else {

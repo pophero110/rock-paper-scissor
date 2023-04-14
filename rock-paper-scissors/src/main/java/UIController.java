@@ -24,10 +24,14 @@ public class UIController {
         System.out.println("Welcome to Rock, Paper, Scissors!\n");
     }
 
-    public void displayGameOver(int state, String player1Shape, String player2Shape) {
-        System.out.println("Computer picks: " + player2Shape);
-        System.out.println("You picks: " + player1Shape);
-        System.out.println(state == 0 ? "You Won!" : state == 1 ? "You Lose!" : "Tie Game");
+    public void displayGameOver(int gameState, String gameMode, Player player1, Player player2) {
+        System.out.format("%s picks: %s \n", player1.getName(), player1.getSelectedShape());
+        System.out.format("%s picks: %s \n", player2.getName(), player2.getSelectedShape());
+        if (gameMode.equals("vs. computer")) {
+            System.out.println(gameState == 0 ? "You Won!" : gameState == 1 ? "You Lose!" : "Tie Game");
+        } else {
+            System.out.println(gameState == 0 ? player1.getName() + " Won!" : gameState == 1 ? player2.getName() + " Won!" : "Tie Game!");
+        }
     }
 
     public void displayPlayerForm() {
@@ -43,8 +47,10 @@ public class UIController {
         System.out.println("!<< Please enter valid input >>");
     }
 
-    public void displayPlayerState(Player player) {
-        System.out.println("=== Player State ===");
-        System.out.println(player);
+    public void displayPlayerState(Player player1, Player player2) {
+        System.out.format("=== %s State ===\n", player1.getName().toUpperCase());
+        System.out.println(player1);
+        System.out.format("=== %s State ===\n", player2.getName().toUpperCase());
+        System.out.println(player2);
     }
 }

@@ -61,13 +61,12 @@ public abstract class Player {
     @Override
     public String toString() {
         return String.format(
-                "  Name: %s\n" +
-                        "  Winning Points: %d\n" +
+                "  Winning Points: %d\n" +
                         "  Losing Points: %d\n" +
                         "  Tie Points: %d\n" +
                         "  Previous Move: %s\n" +
                         "  Won Last Game: %b",
-                name, winningPoints, losingPoints, tiePoints, selectedShape, isWinning);
+                winningPoints, losingPoints, tiePoints, selectedShape, isWinning);
 
     }
 }
